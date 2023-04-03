@@ -3,7 +3,8 @@ import { RouterView } from 'vue-router'
 </script>
 
 <template lang="pug">
-RouterView
+div(class="container mx-auto py-4")
+  RouterView
 </template>
 
 <style>
