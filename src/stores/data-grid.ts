@@ -7,7 +7,7 @@ const defaultItemsOnPage = 10
 
 type State = {
   data: Album[]
-  currentPage: number
+  currentPageIndex: number
   itemsOnPage: number
   sort: { column?: keyof Album; direction: 'ASC' | 'DESC' }
 }
@@ -15,7 +15,7 @@ type State = {
 export const useDataGridStore = defineStore('data-grid', () => {
   const state = reactive<State>({
     data: [],
-    currentPage: 0,
+    currentPageIndex: 0,
     itemsOnPage: defaultItemsOnPage,
     sort: { direction: 'ASC' }
   })
@@ -51,15 +51,17 @@ export const useDataGridStore = defineStore('data-grid', () => {
   })
 
   const currentPageData = computed(() => {
-    const start = state.currentPage * state.itemsOnPage
+    const start = state.currentPageIndex * state.itemsOnPage
     const end = start + state.itemsOnPage
     return sortedData.value.slice(start, end)
   })
 
+  const totalPages = computed(() => Math.ceil(state.data.length / state.itemsOnPage) + 1)
+
   const fetchData = async () => {
     const dataItems = await fetchItems()
     if (dataItems) {
-      state.currentPage = 0
+      state.currentPageIndex = 0
       state.data = dataItems
     }
   }
@@ -72,14 +74,23 @@ export const useDataGridStore = defineStore('data-grid', () => {
     }
   }
 
+  const setCurrentPageIndex = (inx: number) => {
+    if (0 > inx) throw new Error('Current page index must be 0 or more')
+    if (inx >= totalPages.value) throw new Error('Current page index must be les then total pages')
+
+    state.currentPageIndex = inx
+  }
+
   return {
     state: readonly(state),
     getters: {
-      currentPageData
+      currentPageData,
+      totalPages
     },
     actions: {
       fetchData,
-      toogleSorting
+      toogleSorting,
+      setCurrentPageIndex
     }
   }
 })
