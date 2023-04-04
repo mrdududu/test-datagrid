@@ -1,3 +1,6 @@
+<script setup lang="ts">
+import DataGrid from '@/components/DataGrid'
+</script>
 <template lang="pug">
-h1(class="text-3xl font-bold underline") Home Page
+DataGrid
 </template>
