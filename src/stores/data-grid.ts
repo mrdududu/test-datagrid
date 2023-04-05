@@ -2,7 +2,6 @@ import { reactive, computed, readonly } from 'vue'
 import { defineStore } from 'pinia'
 import { fetchItems } from '@/api'
 import type { Album } from '@/api'
-import type { keysOf } from 'element-plus/es/utils'
 
 type SortDirection = 'ASC' | 'DESC'
 

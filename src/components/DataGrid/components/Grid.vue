@@ -5,7 +5,7 @@ import type { Column } from '../'
 
 interface GridProps {
   columns: Column[]
-  rows: unknown[]
+  rows: any[]
 }
 
 const props = defineProps<GridProps>()
