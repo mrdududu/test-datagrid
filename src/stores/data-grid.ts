@@ -2,6 +2,7 @@ import { reactive, computed, readonly } from 'vue'
 import { defineStore } from 'pinia'
 import { fetchItems } from '@/api'
 import type { Album } from '@/api'
+import type { keysOf } from 'element-plus/es/utils'
 
 type SortDirection = 'ASC' | 'DESC'
 
@@ -10,27 +11,45 @@ type State = {
   currentPageIndex: number
   itemsOnPage: number
   sort: { column?: keyof Album; direction: SortDirection }
+  searchText: string
 }
 
 const defaultState: State = {
   data: [],
   currentPageIndex: 0,
   itemsOnPage: 10,
-  sort: { direction: 'ASC' }
+  sort: { direction: 'ASC' },
+  searchText: ''
 }
 
 export const useDataGridStore = defineStore('data-grid', () => {
   const state = reactive<State>(defaultState)
 
+  const filteredData = computed(() => {
+    const data = state.data
+    if (!state.searchText) return data
+
+    return data.filter((item: any) =>
+      Object.keys(item).some((k) => {
+        const val = item[k]
+        if (!val) return false
+
+        return val.toString().toLowerCase().includes(state.searchText.toLowerCase())
+      })
+    )
+  })
+
   const sortedData = computed(() => {
-    if (undefined === state.sort.column || 0 === state.data.length) return state.data
+    const data = filteredData.value
+
+    if (undefined === state.sort.column || 0 === data.length) return data
     else {
-      const firstVal = state.data[0][state.sort.column]
+      const firstVal = data[0][state.sort.column]
 
       if (firstVal) {
         switch (typeof firstVal) {
           case 'number':
-            return state.data.sort((a, b) => {
+            return data.sort((a, b) => {
               const valA = a[state.sort.column as keyof Album] as number
               const valB = b[state.sort.column as keyof Album] as number
               const res = valA - valB
@@ -38,7 +57,7 @@ export const useDataGridStore = defineStore('data-grid', () => {
               return state.sort.direction === 'ASC' ? res : -res
             })
           default:
-            return state.data.sort((a, b) => {
+            return data.sort((a, b) => {
               const valA = a[state.sort.column as keyof Album].toString()
               const valB = b[state.sort.column as keyof Album].toString()
               const res = valA.localeCompare(valB)
@@ -48,7 +67,7 @@ export const useDataGridStore = defineStore('data-grid', () => {
         }
       }
 
-      return state.data
+      return data
     }
   })
 
@@ -58,7 +77,7 @@ export const useDataGridStore = defineStore('data-grid', () => {
     return sortedData.value.slice(start, end)
   })
 
-  const totalPages = computed(() => Math.ceil(state.data.length / state.itemsOnPage))
+  const totalPages = computed(() => Math.ceil(filteredData.value.length / state.itemsOnPage))
 
   const fetchData = async () => {
     const dataItems = await fetchItems()
@@ -88,6 +107,11 @@ export const useDataGridStore = defineStore('data-grid', () => {
     state.itemsOnPage = itemsOnPage
   }
 
+  const setSearchText = (searchText: string) => {
+    state.searchText = searchText
+    state.currentPageIndex = 0
+  }
+
   return {
     state: readonly(state),
     getters: {
@@ -98,7 +122,8 @@ export const useDataGridStore = defineStore('data-grid', () => {
       fetchData,
       toogleSorting,
       setCurrentPageIndex,
-      setItemsOnPage
+      setItemsOnPage,
+      setSearchText
     }
   }
 })
