@@ -3,22 +3,24 @@ import { defineStore } from 'pinia'
 import { fetchItems } from '@/api'
 import type { Album } from '@/api'
 
-const defaultItemsOnPage = 10
+type SortDirection = 'ASC' | 'DESC'
 
 type State = {
   data: Album[]
   currentPageIndex: number
   itemsOnPage: number
-  sort: { column?: keyof Album; direction: 'ASC' | 'DESC' }
+  sort: { column?: keyof Album; direction: SortDirection }
+}
+
+const defaultState: State = {
+  data: [],
+  currentPageIndex: 0,
+  itemsOnPage: 10,
+  sort: { direction: 'ASC' }
 }
 
 export const useDataGridStore = defineStore('data-grid', () => {
-  const state = reactive<State>({
-    data: [],
-    currentPageIndex: 0,
-    itemsOnPage: defaultItemsOnPage,
-    sort: { direction: 'ASC' }
-  })
+  const state = reactive<State>(defaultState)
 
   const sortedData = computed(() => {
     if (undefined === state.sort.column || 0 === state.data.length) return state.data
@@ -56,7 +58,7 @@ export const useDataGridStore = defineStore('data-grid', () => {
     return sortedData.value.slice(start, end)
   })
 
-  const totalPages = computed(() => Math.ceil(state.data.length / state.itemsOnPage) + 1)
+  const totalPages = computed(() => Math.ceil(state.data.length / state.itemsOnPage))
 
   const fetchData = async () => {
     const dataItems = await fetchItems()
@@ -81,6 +83,11 @@ export const useDataGridStore = defineStore('data-grid', () => {
     state.currentPageIndex = inx
   }
 
+  const setItemsOnPage = (itemsOnPage: number) => {
+    if (1 > itemsOnPage) throw new Error('Items on page must be more than 0')
+    state.itemsOnPage = itemsOnPage
+  }
+
   return {
     state: readonly(state),
     getters: {
@@ -90,7 +97,8 @@ export const useDataGridStore = defineStore('data-grid', () => {
     actions: {
       fetchData,
       toogleSorting,
-      setCurrentPageIndex
+      setCurrentPageIndex,
+      setItemsOnPage
     }
   }
 })
