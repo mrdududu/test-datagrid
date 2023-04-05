@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ElButton } from 'element-plus'
 interface ButtonProps {
   label?: string
   disabled: boolean
@@ -10,8 +11,8 @@ const emit = defineEmits<{
 }>()
 </script>
 <template>
-  <button class="btn btn-sm btn-outline" :disabled="disabled" @click="$emit('click')">
+  <el-button :disabled="disabled" @click="$emit('click')">
     <template v-if="label">{{ label }}</template>
     <slot v-else></slot>
-  </button>
+  </el-button>
 </template>
