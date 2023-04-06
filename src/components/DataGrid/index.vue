@@ -13,7 +13,7 @@ const columns: Column[] = [
   { name: 'title', label: 'title', sortable: true }
 ]
 
-const pageSizeOptions = [3, 10, 20, 23]
+const pageSizeOptions = [10, 15, 20, 25, 26]
 
 const store = useDataGridStore()
 store.actions.fetchData()
@@ -40,11 +40,12 @@ const handleSearchTextChange = (searchText: string) => {
 </script>
 <template lang="pug">
 div
-  .flex.justify-between
+  .flex.justify-between.mb-4
     PageSizeSelector(:itemsOnPage="store.state.itemsOnPage" :pageSizeOptions="pageSizeOptions" @change="handelItemsOnPageChange")
     Search(:searchText="store.state.searchText" @change="handleSearchTextChange")
-  Grid(:columns="columns" :rows="store.getters.currentPageData" @sortToggle="handleSortToggle")
-  .flex.justify-between
+  div
+    Grid(:columns="columns" :rows="store.getters.currentPageData" @sortToggle="handleSortToggle")
+  .flex.justify-between.mt-4
     Info(:startEntry="store.getters.info.startEntry" :endEntry="store.getters.info.endEntry" :totalEntries="store.getters.info.totalEntries")
     Paging(:pageIndex="store.state.currentPageIndex" :totalPages="store.getters.totalPages" @setPage="handleSetPage")
 </template>
