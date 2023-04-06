@@ -21,3 +21,9 @@ table
   tbody
     GridRow(v-for="row in rows" :key="JSON.stringify(row)" :columns="columns" :row="row")
 </template>
+
+<style scoped>
+table {
+  @apply w-full table-auto border-collapse;
+}
+</style>

@@ -27,3 +27,9 @@ tr(v-if="state.isOpen")
   td(:colspan="columns.length")
     Details(:id="row.id")
 </template>
+
+<style scoped>
+td {
+  @apply border border-slate-300 p-2 cursor-pointer;
+}
+</style>
