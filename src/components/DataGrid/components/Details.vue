@@ -12,7 +12,19 @@ details.fetch()
 </script>
 <template lang="pug">
 table(v-if="details.data.value")
-  tr(v-for="k in Object.keys(details.data.value)" :key="k")
-    td {{ k }}
-    td {{ details.data.value[k] }}
+  tbody
+    tr(v-for="k in Object.keys(details.data.value)" :key="k")
+      td {{ k }}
+      td {{ details.data.value[k] }}
 </template>
+<style scoped>
+table {
+  @apply table-auto border-collapse;
+}
+tbody {
+  @apply divide-y divide-gray-300;
+}
+td {
+  @apply p-2;
+}
+</style>
