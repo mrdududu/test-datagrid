@@ -6,6 +6,7 @@ import type { Column } from '../'
 interface GridProps {
   columns: Column[]
   rows: any[]
+  sort?: { column: string; direction: 'ASC' | 'DESC' }
 }
 
 const props = defineProps<GridProps>()
@@ -17,7 +18,7 @@ const emit = defineEmits<{
 
 <template lang="pug">
 table
-  GridHeader(:columns="columns" @sortToggle="($event) => $emit('sortToggle', $event)")
+  GridHeader(:columns="columns" :sort="sort" @sortToggle="($event) => $emit('sortToggle', $event)")
   tbody
     GridRow(v-for="row in rows" :key="JSON.stringify(row)" :columns="columns" :row="row")
 </template>

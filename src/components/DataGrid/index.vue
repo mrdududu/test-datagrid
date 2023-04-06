@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useDataGridStore } from '@/stores/data-grid'
 import Grid from './components/Grid.vue'
 import Paging from './components/Paging.vue'
@@ -8,15 +9,21 @@ import Info from './components/Info.vue'
 import type { Column } from './'
 
 const columns: Column[] = [
-  { name: 'userId', label: 'userId', sortable: true },
-  { name: 'id', label: 'id', sortable: true },
-  { name: 'title', label: 'title', sortable: true }
+  { name: 'userId', label: 'userId' },
+  { name: 'id', label: 'id' },
+  { name: 'title', label: 'title' }
 ]
 
 const pageSizeOptions = [10, 15, 20, 25, 26]
 
 const store = useDataGridStore()
 store.actions.fetchData()
+
+const sort = computed(() => {
+  if (!store.state.sort.column) return null
+
+  return store.state.sort
+})
 
 const handleSortToggle = (nameColumn: string) => {
   console.log('handleSortToggle', nameColumn)
@@ -44,7 +51,7 @@ div
     PageSizeSelector(:itemsOnPage="store.state.itemsOnPage" :pageSizeOptions="pageSizeOptions" @change="handelItemsOnPageChange")
     Search(:searchText="store.state.searchText" @change="handleSearchTextChange")
   div
-    Grid(:columns="columns" :rows="store.getters.currentPageData" @sortToggle="handleSortToggle")
+    Grid(:columns="columns" :sort="sort" :rows="store.getters.currentPageData" @sortToggle="handleSortToggle")
   .flex.justify-between.mt-4
     Info(:startEntry="store.getters.info.startEntry" :endEntry="store.getters.info.endEntry" :totalEntries="store.getters.info.totalEntries")
     Paging(:pageIndex="store.state.currentPageIndex" :totalPages="store.getters.totalPages" @setPage="handleSetPage")
