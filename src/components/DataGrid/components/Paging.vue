@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import Button from '@/components/ui/Button.vue'
+import { ElButton } from 'element-plus'
 interface PagingProps {
   pageIndex: number
   totalPages: number
@@ -15,7 +15,7 @@ const pages = computed(() => Array.from(Array(props.totalPages), (_, x) => x))
 </script>
 <template lang="pug">
 div
-  Button(label="Previous" :disabled="pageIndex === 0" @click="$emit('setPage', pageIndex - 1)")
-  Button(v-for="pIndex in pages" :label="`${pIndex + 1}`" :disabled="pIndex === pageIndex" @click="$emit('setPage', pIndex)")
-  Button(label="Next"  :disabled="pageIndex === totalPages - 1" @click="$emit('setPage', pageIndex + 1)")
+  el-button(:disabled="pageIndex === 0" @click="$emit('setPage', pageIndex - 1)") Previous
+  el-button(v-for="pIndex in pages" :disabled="pIndex === pageIndex" @click="$emit('setPage', pIndex)") {{ pIndex + 1 }}
+  el-button(:disabled="pageIndex === totalPages - 1" @click="$emit('setPage', pageIndex + 1)") Next
 </template>
