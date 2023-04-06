@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
+import { ElIcon, ElButton } from 'element-plus'
+import { CirclePlusFilled, RemoveFilled } from '@element-plus/icons-vue'
 import Details from './Details.vue'
 import type { Column } from '../'
 
@@ -22,14 +24,16 @@ const handleRowClick = () => {
 </script>
 <template lang="pug">
 tr
-  td(v-for="column in columns" :key="column.name" @click="handleRowClick") {{ row[column.name] }}
+  td.text-center
+    el-button(:icon="state.isOpen ? RemoveFilled : CirclePlusFilled" circle text @click="handleRowClick")
+  td(v-for="column in columns" :key="column.name") {{ row[column.name] }}
 tr(v-if="state.isOpen")
-  td(:colspan="columns.length")
+  td(:colspan="columns.length + 1")
     Details(:id="row.id")
 </template>
 
 <style scoped>
 td {
-  @apply border border-slate-300 p-2 cursor-pointer;
+  @apply border border-slate-300 p-2;
 }
 </style>

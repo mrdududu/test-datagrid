@@ -22,6 +22,7 @@ const showSort = (colName: string) => {
 <template lang="pug">
 thead 
   tr
+    th.w-14
     th(v-for="column in columns" :key="column.name" @click="$emit('sortToggle', column.name)")
       .flex.items-center.justify-center
         .mx-2 {{ column.label }}
