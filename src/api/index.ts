@@ -17,22 +17,14 @@ export interface AlbumDetail {
 }
 
 export const fetchItems = async () => {
-  try {
-    const res = await api.get<Album[]>('/albums')
-    // console.log(res.data)
-    return res.data
-  } catch (err) {
-    console.error(err)
-  }
+  const res = await api.get<Album[]>('/albums')
+  // console.log(res.data)
+  return res.data
 }
 
 export const fetchItemDetail = async (id: number) => {
-  try {
-    const res = await api.get<AlbumDetail[]>('/photos')
-    if (Array.isArray(res.data)) {
-      return res.data.find((item) => item.id === id)
-    }
-  } catch (err) {
-    console.error(err)
+  const res = await api.get<AlbumDetail[]>('/photos')
+  if (Array.isArray(res.data)) {
+    return res.data.find((item) => item.id === id)
   }
 }
