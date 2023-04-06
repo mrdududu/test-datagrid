@@ -4,6 +4,7 @@ import Grid from './components/Grid.vue'
 import Paging from './components/Paging.vue'
 import PageSizeSelector from './components/PageSizeSelector.vue'
 import Search from './components/Search.vue'
+import Info from './components/Info.vue'
 import type { Column } from './'
 
 const columns: Column[] = [
@@ -43,5 +44,7 @@ div
     PageSizeSelector(:itemsOnPage="store.state.itemsOnPage" :pageSizeOptions="pageSizeOptions" @change="handelItemsOnPageChange")
     Search(:searchText="store.state.searchText" @change="handleSearchTextChange")
   Grid(:columns="columns" :rows="store.getters.currentPageData" @sortToggle="handleSortToggle")
-  Paging(:pageIndex="store.state.currentPageIndex" :totalPages="store.getters.totalPages" @setPage="handleSetPage")
+  .flex.justify-between
+    Info(:startEntry="store.getters.info.startEntry" :endEntry="store.getters.info.endEntry" :totalEntries="store.getters.info.totalEntries")
+    Paging(:pageIndex="store.state.currentPageIndex" :totalPages="store.getters.totalPages" @setPage="handleSetPage")
 </template>

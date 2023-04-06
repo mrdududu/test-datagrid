@@ -78,6 +78,12 @@ export const useDataGridStore = defineStore('data-grid', () => {
 
   const totalPages = computed(() => Math.ceil(filteredData.value.length / state.itemsOnPage))
 
+  const info = computed(() => ({
+    startEntry: state.currentPageIndex * state.itemsOnPage + 1,
+    endEntry: state.currentPageIndex * state.itemsOnPage + currentPageData.value.length,
+    totalEntries: sortedData.value.length
+  }))
+
   const fetchData = async () => {
     const dataItems = await fetchItems()
     if (dataItems) {
@@ -115,7 +121,8 @@ export const useDataGridStore = defineStore('data-grid', () => {
     state: readonly(state),
     getters: {
       currentPageData,
-      totalPages
+      totalPages,
+      info
     },
     actions: {
       fetchData,
