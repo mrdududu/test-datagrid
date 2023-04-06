@@ -11,8 +11,8 @@ const emit = defineEmits<{
 }>()
 </script>
 <template lang="pug">
-.flex
-  div Search:
-  div
+.flex.items-center
+  .mr-2 Search:
+  .w-40
     el-input(:modelValue="searchText" @update:modelValue="$emit('change', $event)")
 </template>

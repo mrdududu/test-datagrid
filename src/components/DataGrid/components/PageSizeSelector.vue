@@ -13,10 +13,10 @@ const emit = defineEmits<{
 }>()
 </script>
 <template lang="pug">
-.flex
-  div Show 
-  div
+.flex.items-center
+  .mr-2 Show 
+  .w-24
     el-select(:modelValue="itemsOnPage" @update:modelValue="$emit('change', $event)")
       el-option(v-for="pSize in pageSizeOptions" :key="pSize" :value="pSize" :label="`${pSize}`")
-  div entries
+  .ml-2 entries
 </template>
