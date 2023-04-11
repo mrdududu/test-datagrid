@@ -11,9 +11,9 @@ interface DetailsProps {
 
 const props = defineProps<DetailsProps>()
 
-// type ItemDetail = Awaited<ReturnType<typeof fetchItemDetail>>
+type ItemDetail = Awaited<ReturnType<typeof fetchItemDetail>>
 
-const fetchDetailsMachine = fetchMachine(() => fetchItemDetail(props.id))
+const fetchDetailsMachine = fetchMachine<ItemDetail>(() => fetchItemDetail(props.id))
 const { state, send } = useMachine(fetchDetailsMachine)
 
 onMounted(() => {
