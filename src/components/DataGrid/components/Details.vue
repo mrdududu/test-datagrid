@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import { useDetails } from '@/stores/use-fetch-details'
+import { useMachine } from '@xstate/vue'
+import { fetchMachine } from '@/fsm/fetch-machine'
+import { fetchItemDetail } from '@/api'
 import { ElSkeleton } from 'element-plus'
 
 interface DetailsProps {
@@ -9,21 +11,24 @@ interface DetailsProps {
 
 const props = defineProps<DetailsProps>()
 
-const details = useDetails(props.id)
+// type ItemDetail = Awaited<ReturnType<typeof fetchItemDetail>>
+
+const fetchDetailsMachine = fetchMachine(() => fetchItemDetail(props.id))
+const { state, send } = useMachine(fetchDetailsMachine)
 
 onMounted(() => {
-  details.fetch()
+  send('FETCH')
 })
 </script>
 <template lang="pug">
-.flex(v-if="details.state.value === 'loading'") 
+.flex(v-if="state.matches('loading')") 
   el-skeleton(:rows="5" animated)
-table(v-if="details.state.value === 'done'")
+table(v-if="state.matches('success')")
   tbody
-    tr(v-for="k in Object.keys(details.data.value)" :key="k")
+    tr(v-for="k in Object.keys(state.context.data)" :key="k")
       td {{ k }}
-      td {{ details.data.value[k] }}
-div(v-if="details.state.value === 'error'") {{ details.errMsg.value }}
+      td {{ state.context.data[k] }}
+div(v-if="state.matches('failture')") {{ state.context.error}}
 </template>
 <style scoped>
 table {
